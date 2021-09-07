@@ -8,6 +8,18 @@ Parameters:
     Default: sandbox
 
 Resources:
+
+  # https://aws.amazon.com/de/blogs/security/how-to-create-and-retrieve-secrets-managed-in-aws-secrets-manager-using-aws-cloudformation-template/
+  MyRDSInstanceRotationSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: 'This is the secret for my RDS instance'
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "superpostgres"}'
+        GenerateStringKey: 'password'
+        PasswordLength: 16
+        ExcludeCharacters: '"@/\'
+
   DBInstance:
     Type: AWS::RDS::DBInstance
     Properties:
@@ -17,7 +29,7 @@ Resources:
       PubliclyAccessible: false
       EngineVersion: 13
       MultiAZ: true
-      MasterUsername: postgres
-      DBInstanceClass: db.t3.micro
-      AllocatedStorage: 1000
-      MasterUserPassword: postgres
+      MasterUsername: !Join ['', ['{{resolve:secretsmanager:', !Ref MyRDSInstanceRotationSecret, ':SecretString:username}}' ]]
+      MasterUserPassword: !Join ['', ['{{resolve:secretsmanager:', !Ref MyRDSInstanceRotationSecret, ':SecretString:password}}' ]]
+      DBInstanceClass: db.m5.large
+      AllocatedStorage: 20

@@ -21,7 +21,7 @@ aws cloudformation deploy \
   --stack-name Nested-Test  \
   --region us-west-2  \
   --template-file packaged.yaml \
-  --parameter-overrides ParameterKey=EnvironmentName,ParameterValue=Test-CF-Environment \
+  --parameter-overrides EnvironmentName=Test-CF-Environment \
   --capabilities CAPABILITY_IAM
 ```
 
