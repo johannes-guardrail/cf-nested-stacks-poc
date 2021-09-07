@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Postgres RDS service
+
+Parameters:
+  EnvironmentName:
+    Description: Environment
+    Type: String
+    Default: sandbox
+
+Resources:
+  DBInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: !Join [ '-', [ !Ref EnvironmentName, test ] ]
+      DBName: test
+      Engine: postgres
+      PubliclyAccessible: false
+      EngineVersion: 13
+      MultiAZ: true
+      MasterUsername: postgres
+      DBInstanceClass: db.t3.micro
+      AllocatedStorage: 1000
+      MasterUserPassword: postgres
